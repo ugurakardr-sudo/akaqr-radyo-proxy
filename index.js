@@ -3,8 +3,8 @@ const axios = require('axios');
 const app = express();
 
 app.get('/dinle', async (req, res) => {
-    // Metro FM'in ham yayın adresi
-    const targetStreamUrl = "http://46.20.3.201/;stream.mp3";
+    // Daha önce sende çalışan Best FM linki
+    const targetStreamUrl = "https://ssldyg.radyotvonline.com/best/bestfm.stream/playlist.m3u8";
     
     try {
         const response = await axios({
@@ -12,18 +12,17 @@ app.get('/dinle', async (req, res) => {
             url: targetStreamUrl,
             responseType: 'stream',
             headers: {
-                'User-Agent': 'Mozilla/5.0',
-                'Accept': '*/*'
+                'User-Agent': 'Mozilla/5.0'
             }
         });
 
-        // Tarayıcıya bunun bir ses akışı olduğunu söylüyoruz
-        res.setHeader('Content-Type', 'audio/mpeg');
+        // m3u8 akışları için uygun başlık
+        res.setHeader('Content-Type', 'application/x-mpegURL');
         response.data.pipe(res);
     } catch (error) {
-        res.status(500).send("Yayın sunucusuna bağlanılamadı.");
+        res.status(500).send("Radyo baglantisi kurulamadi.");
     }
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Proxy ${PORT} portunda hazır.`));
+app.listen(PORT, () => console.log(`Proxy ${PORT} portunda Best FM ile hazir.`));
